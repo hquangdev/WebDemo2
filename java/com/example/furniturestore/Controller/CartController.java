@@ -39,14 +39,16 @@ public class CartController {
     // Xử lý thanh toán và lưu đơn hàng vào DB
     @PostMapping("/user/checkout")
     public ResponseEntity<String> checkout(@RequestHeader(value = "Authorization", required = false) String token,
-                                           @RequestParam String address, @RequestParam String phone,
-                                           @RequestParam String note, HttpSession session) {
+                                           @RequestParam String address,
+                                           @RequestParam String phone,
+                                           @RequestParam String note,
+                                           HttpSession session) {
 
-        System.out.println("Địa chỉ: " + address);
         String sessionId = session.getId();
-        System.out.println("Session ID: " + sessionId);
+
         if (token == null || !token.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bạn chưa đăng nhập. Vui lòng đăng nhập trước khi thanh toán.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Bạn chưa đăng nhập. Vui lòng đăng nhập trước khi thanh toán.");
         }
 
         // Trích xuất userId từ token
@@ -55,23 +57,21 @@ public class CartController {
         try {
             userId = jwtUtils.extractUserId(jwtToken);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại.");
         }
 
+        // Xử lý thanh toán
         String result = cartService.checkout(sessionId, userId, address, phone, note);
+
+        // Trả về kết quả thanh toán
         if (result.equals("Giỏ hàng trống. Không thể thanh toán.")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        } else if (result.equals("Giỏ hàng đang được xử lý, vui lòng thử lại sau.")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
         }
 
         return ResponseEntity.ok(result);
-    }
-
-    // Xóa giỏ hàng sau khi thanh toán
-    @DeleteMapping("/clear")
-    public String clearCart(HttpSession session) {
-        String sessionId = session.getId();
-        cartService.clearCart(sessionId);
-        return "Giỏ hàng đã được xóa.";
     }
 
 }
