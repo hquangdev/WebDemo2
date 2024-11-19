@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<body>
+<div class="page-header text-center" style="background-image: url('/assets/images/page-header-bg.jpg')">
+    <div class="container">
+        <h1 class="page-title">Shopping Cart<span>Shop</span></h1>
+    </div><!-- End .container -->
+</div><!-- End .page-header -->
+<nav aria-label="breadcrumb" class="breadcrumb-nav">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Shop</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+        </ol>
+    </div><!-- End .container -->
+</nav><!-- End .breadcrumb-nav -->
+
+<div class="page-content" >
+    <div class="cart">
+        <div class="container">
+            <div th:if="${mess}">
+                <p style="color: #4CAF50" th:text="${mess}"></p>
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <table class="table table-cart table-mobile">
+                        <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Tổng tiền</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                    <!--Hiện thị giỏ hàng-->
+                        <tbody id="cart">
+                        <!-- Nội dung giỏ hàng sẽ được thêm vào đây -->
+                        </tbody>
+                    </table>
+
+                    <div class="cart-bottom">
+                        <div class="cart-discount ">
+                            <a href="/home" class="btn btn-outline-dark-2" style="padding: 12px 15px;"><span>Tiếp tục mua sắm</span></a>
+                        </div><!-- End .cart-discount -->
+                        <a href="#" class="btn btn-outline-dark-2"><span>Thanh toán</span><i class="icon-arrow-right"></i></a>
+                    </div>
+                </div><!-- End .col-lg-9 -->
+                <aside class="col-lg-4">
+
+                    <!---------- Thông tin khách hàng----------- -->
+                    <div class="summary summary-cart">
+                        <tr class="summary-subtotal">
+                            <td>Tổng tiền: </td>
+                            <td id="totalAmount">0 VND</td> <!-- Chỗ này sẽ được cập nhật bằng JS -->
+                        </tr>
+                        <form action="/home/checkout" method="post">
+                            <div class="form-group">
+                                <label for="customerName">Họ và tên:</label>
+                                <input type="text" id="customerName" name="name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customerEmail">Email:</label>
+                                <input type="email" id="customerEmail" name="email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customerPhone">Số điện thoại:</label>
+                                <input type="tel" id="customerPhone" name="phone" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customerAddress">Địa chỉ:</label>
+                                <input type="text" id="customerAddress" name="address" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customernote">Ghi chú:</label>
+                                <input type="text" id="customernote" name="note" class="form-control">
+                            </div>
+
+                            <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+                            <div id="loginRequired" style="display: none;">
+                                <a href="/home/login" class="btn btn-outline-primary-2 btn-order btn-block">
+                                    Bạn cần đăng nhập
+                                </a>
+                            </div>
+
+                            <div id="checkoutButton" style="display: none;">
+                                <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                                    Xác nhận thanh toán
+                                </button>
+                            </div>
+
+                            <input type="hidden" name="productId" /> <!-- Sử dụng JS để cập nhật giá trị này nếu cần -->
+                        </form>
+                    </div><!-- End .summary -->
+
+
+
+                </aside><!-- End .col-lg-3 -->
+            </div><!-- End .row -->
+        </div><!-- End .container -->
+    </div><!-- End .cart -->
+</div>
+
+<script >
+    // Hàm để hiển thị giỏ hàng
+    const displayCart = () => {
+        const cartContainer = document.getElementById('cart');
+
+        // Kiểm tra xem cartContainer có tồn tại không
+        if (!cartContainer) {
+            console.error('Không tìm thấy phần tử với ID "cart".');
+            return;
+        }
+
+        cartContainer.innerHTML = '';
+
+        // Gửi yêu cầu GET đến API để lấy giỏ hàng
+        fetch('/home/cart/list')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Có lỗi khi lấy giỏ hàng');
+                }
+                return response.json(); // Chuyển đổi phản hồi thành JSON
+            })
+            .then(cartData => {
+                // Kiểm tra nếu giỏ hàng rỗng
+                if (Object.keys(cartData).length === 0) {
+                    cartContainer.innerHTML = '<tr><td colspan="5">Giỏ hàng của bạn đang trống.</td></tr>';
+                    return;
+                }
+
+                // Duyệt qua các sản phẩm trong giỏ hàng
+                for (const [id, item] of Object.entries(cartData)) {
+                    const total = item.price * item.quantity; // Tính tổng tiền cho sản phẩm
+                    const cartRow = `
+                <tr>
+                    <td class="product-col">
+                        <div class="product">
+                            <figure class="product-media">
+                                <a href="#">
+                                    <img src="/images/product/${item.image}" alt="${item.name}">
+                                </a>
+                            </figure>
+                            <h3 class="product-title">
+                                <a>${item.name}</a>
+                            </h3>
+                        </div>
+                    </td>
+                    <td class="price-col">${item.price} VND</td>
+                    <td class="quantity-col">
+                        <form action="/home/updateCart" method="post">
+                            <div class="cart-product-quantity">
+                                <input type="hidden" name="productId" value="${id}"/>
+                                <input type="number" class="form-control" name="quantity" value="${item.quantity}" min="1" step="1" required>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-primary-2" type="submit" style="margin-top: 5px; min-width: 100px;">Cập nhật</button>
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                    <td class="total-col">${total} VND</td>
+                    <td class="remove-col">
+                        <form action="/home/delete" method="post">
+                            <input type="hidden" name="productId" value="${id}"/>
+                            <button class="btn-remove"><i class="icon-close"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            `;
+                    cartContainer.insertAdjacentHTML('beforeend', cartRow); // Thêm hàng sản phẩm vào giỏ hàng
+                }
+            })
+            .catch(error => {
+                console.error('Có lỗi khi lấy giỏ hàng:', error);
+            });
+    };
+
+    // Gọi hàm hiển thị giỏ hàng khi trang được tải
+    document.addEventListener('DOMContentLoaded', function () {
+        displayCart(); // Gọi hàm hiển thị giỏ hàng
+    });
+
+
+
+    //thanh toán
+
+        document.addEventListener('DOMContentLoaded', function () {
+        // Kiểm tra xem người dùng đã đăng nhập chưa (dựa trên token trong localStorage)
+        const token = localStorage.getItem('token');
+        const checkoutButton = document.getElementById('checkoutButton');
+        const loginRequired = document.getElementById('loginRequired');
+
+        // Lấy thông tin giỏ hàng và cập nhật tổng tiền
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        // Cập nhật tổng tiền trong giao diện
+        document.getElementById('totalAmount').textContent = `${totalAmount} VND`;
+
+        // Kiểm tra xem người dùng đã đăng nhập chưa
+        if (token) {
+        // Nếu người dùng đã đăng nhập, hiển thị nút thanh toán
+        checkoutButton.style.display = 'block';
+        loginRequired.style.display = 'none';
+
+        // Cập nhật thông tin người dùng vào form (nếu có)
+        const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};  // Giả sử bạn đã lưu thông tin người dùng vào localStorage
+        document.getElementById('customerName').value = userInfo.name || '';
+        document.getElementById('customerEmail').value = userInfo.email || '';
+    } else {
+        // Nếu người dùng chưa đăng nhập, hiển thị nút yêu cầu đăng nhập
+        checkoutButton.style.display = 'none';
+        loginRequired.style.display = 'block';
+    }
+
+        // Xử lý gửi yêu cầu thanh toán
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function (event) {
+        event.preventDefault();  // Ngừng hành động submit mặc định
+
+        // Lấy thông tin từ form
+        const name = document.getElementById('customerName').value;
+        const email = document.getElementById('customerEmail').value;
+        const phone = document.getElementById('customerPhone').value;
+        const address = document.getElementById('customerAddress').value;
+        const note = document.getElementById('customernote').value;
+
+        // Tạo dữ liệu cho request
+        const orderData = {
+        name: name,
+        email: email,
+        phone: phone,
+        address: address,
+        notes: note,
+        totalPrice: totalAmount,  // Sử dụng tổng tiền đã tính từ giỏ hàng
+        status: "pending",  // Hoặc trạng thái đơn hàng khác nếu có
+        items: cart.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price
+    }))
+    };
+
+        // Gửi yêu cầu thanh toán
+        fetch('/user/orders', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`  // Nếu cần gửi token xác thực
+    },
+        body: JSON.stringify(orderData)
+    })
+        .then(response => response.json())
+        .then(data => {
+        // Xử lý khi tạo đơn hàng thành công (ví dụ: chuyển hướng đến trang xác nhận)
+        console.log('Đơn hàng đã được tạo:', data);
+        alert('Đơn hàng của bạn đã được tạo thành công!');
+        window.location.href = '/home/order-confirmation';  // Điều hướng đến trang xác nhận
+    })
+        .catch(error => {
+        console.error('Có lỗi xảy ra:', error);
+        alert('Đã có lỗi xảy ra. Vui lòng thử lại.');
+    });
+    });
+    });
+
+</script>
+</body>
+
+</html>

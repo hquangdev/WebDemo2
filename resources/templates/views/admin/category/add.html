@@ -1,0 +1,16 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div>
+    <h1>Thêm Danh Mục</h1>
+
+    <form action="save-category" method="post">
+        <label for="name">Tên danh mục:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="details">Chi tiết:</label>
+        <textarea id="details" name="details" rows="4" required></textarea>
+
+        <input type="submit" value="Lưu">
+        <a th:href="@{/admin/category}" class="button-quaylai button">Quay lại danh sách</a>
+    </form>
+</div>
+</html>

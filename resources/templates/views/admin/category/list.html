@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Danh mục</title>
+</head>
+<body>
+<!--<div>-->
+    <h1>Quản lý Danh mục</h1>
+    <div class="button-container">
+        <h4><a href="#" onclick="loadContent('/views/admin/dashboard.html')" class="button">Quay lại trang chủ</a></h4>
+        <h4><a href="#" onclick="loadContent('/views/admin/category/add.html')" class="button">Thêm danh mục</a></h4>
+    </div>
+    <div th:if="${mess}">
+        <p style="color: #4CAF50" th:text="${mess}"></p>
+    </div>
+    <div th:if="${error}">
+        <p style="color: #4CAF50" th:text="${error}"></p>
+    </div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Tên danh mục</th>
+            <th>Chi tiết</th>
+            <th colspan="2">Tác vụ</th>
+        </tr>
+        <tbody>
+        <tr th:each="item: ${categories}">
+            <td th:text="${item.id}"></td>
+            <td th:text="${item.name}"></td>
+            <td th:text="${item.details}"></td>
+            <td>
+                <a th:href="@{/admin/category/edit/{id}(id=${item.id})}" class="btn btn-primary">Sửa</a>
+            </td>
+            <td>
+                <a th:href="@{/admin/category/delete/{id}(id=${item.id})}" class="btn btn-primary">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Error</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .error-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px;
+            border: 1px solid #f5c6cb;
+            background-color: #f8d7da;
+            color: #721c24;
+            text-align: center;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .error-container h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .error-container p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .error-container a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            color: #fff;
+            background-color: #721c24;
+            text-decoration: none;
+            border-radius: 5px; /* Rounded button */
+            transition: background-color 0.3s;
+        }
+
+        .error-container a:hover {
+            background-color: #a71c24; /* Darker shade on hover */
+        }
+
+        @media (max-width: 600px) {
+            .error-container {
+                padding: 20px;
+            }
+
+            .error-container h1 {
+                font-size: 1.5em;
+            }
+
+            .error-container p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1>Đã xảy ra lỗi!</h1>
+    <p th:text="${errorMessage}"></p>
+    <a href="/NoiThatShop">Quay lại trang chủ</a>
+</div>
+</body>
+</html>

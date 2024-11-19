@@ -1,0 +1,22 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div>
+    <h1>Thêm slide</h1>
+    <p th:if="${error}" th:text="${error}"></p>
+
+    <form th:action="@{save-slide}" method="post" enctype="multipart/form-data">
+        <label for="image">Hình ảnh:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+
+        <label for="title">Tiêu đề:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="content">Nội dung:</label>
+        <input type="text" id="content" name="content" required>
+
+        <input type="submit" value="Thêm slide">
+        <a th:href="@{/admin/slide}" class="button-quaylai button">Quay lại danh sách</a>
+    </form>
+
+
+</div>
+</html>

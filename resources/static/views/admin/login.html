@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h3 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 278px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h3>Đăng Nhập</h3>
+
+    <div id="error-message" style="color: red; font-size: 16px;"></div>
+
+    <form id="login-form">
+        <div>
+            <label>
+                <input type="text" name="email" placeholder="Xin mời nhâp tài khoản" required>
+            </label>
+        </div>
+        <div>
+            <label>
+                <input type="password" name="password" placeholder="Xin mời nhâp mật khẩu" required>
+            </label>
+        </div>
+        <button type="submit">Đăng Nhập</button>
+        <div>
+            <p><a href="#">Quên mật khẩu?</a></p>
+            <p id="error-message" style="color: red;"></p>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('login-form').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Ngăn chặn việc gửi form theo cách mặc định
+
+        // Lấy dữ liệu từ form
+        const email = event.target.email.value;
+        const password = event.target.password.value;
+
+        try {
+            // Gửi yêu cầu đăng nhập
+            const response = await fetch('/auth/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('refreshToken', data.refreshToken);
+                alert('Đăng nhập thành công!');
+                window.location.href = "/home/dashboard";
+            } else {
+                const error = await response.json();
+                document.getElementById('error-message').textContent = error.message || "Đăng nhập không thành công";
+            }
+        } catch (error) {
+            console.error('Lỗi:', error);
+            document.getElementById('error-message').textContent = "Đã xảy ra lỗi, vui lòng thử lại!";
+        }
+    });
+</script>
+</body>
+</html>
+

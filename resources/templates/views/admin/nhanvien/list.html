@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý nhân sự</title>
+</head>
+<body>
+<!--<div>-->
+<h1>Quản lý nhân sự</h1>
+<div class="button-container">
+    <h4><a th:href="@{/admin}" class="button">Quay lại trang chủ</a></h4>
+    <h4><a th:href="@{/admin/nhansu/add}" class="button">Thêm nhân sự</a></h4>
+</div>
+<div th:if="${mess}">
+    <p style="color: #4CAF50" th:text="${mess}"></p>
+</div>
+<div th:if="${error}">
+    <p style="color: #4CAF50" th:text="${error}"></p>
+</div>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Họ và tên</th>
+        <th>Tên</th>
+        <th>Địa chỉ</th>
+        <th>Số điện thoại</th>
+        <th>email</th>
+        <th>Chức vụ</th>
+        <th colspan="2">Tác vụ</th>
+    </tr>
+    <tbody>
+    <tr th:each="item: ${users}">
+        <td th:text="${item.id}"></td>
+        <td th:text="${item.fullname}"></td>
+        <td th:text="${item.username}"></td>
+        <td th:text="${item.address}"></td>
+        <td th:text="${item.phone}"></td>
+        <td th:text="${item.email}"></td>
+<!--        <td th:text="${user.enabled ? 'Kích hoạt' : 'Vô hiệu hóa'}"></td>-->
+        <td>
+            <!-- Kiểm tra chức vụ -->
+            <span th:if="${item.role.id == 1}">Quản lý</span>
+            <span th:if="${item.role.id == 2}">Nhân viên</span>
+        </td>
+        <td>
+            <a th:href="@{/admin/nhansu/edit/{id}(id=${item.id})}" class="btn btn-primary">Sửa</a>
+        </td>
+        <td>
+            <a th:href="@{/admin/nhansu/delete/{id}(id=${item.id})}" class="btn btn-primary">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+
+</body>
+</html>

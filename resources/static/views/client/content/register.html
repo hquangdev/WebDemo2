@@ -1,0 +1,58 @@
+
+<div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('/assets/images/backgrounds/login-bg.jpg')">
+  <div class="container">
+    <div class="form-box">
+      <div class="form-tab">
+        <ul class="nav nav-pills nav-fill" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link"  href="#" aria-controls="signin-2" aria-selected="false">Đăng nhập</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" id="register-tab-2" data-toggle="tab" href="#register-2" role="tab" aria-controls="register-2" aria-selected="true">Đăng kí</a>
+          </li>
+        </ul>
+
+        <div>
+          <p ></p>
+        </div>
+
+        <div class="tab-content">
+
+          <!--đăng kí-->
+          <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
+            <form action="/home/register" method="post">
+              <div class="form-group">
+                <label for="register-email-2">Tài khoản gmail *</label>
+                <input type="email" class="form-control" id="register-email-2" name="email" required>
+              </div><!-- End .form-group -->
+
+              <div class="form-group">
+                <label for="register-username-2">Họ và tên *</label>
+                <input type="text" class="form-control" id="register-username-2" name="name" required>
+              </div><!-
+
+              <div class="form-group">
+                <label for="register-password-2">Mật khẩu *</label>
+                <input type="password" class="form-control" id="register-password-2" name="password" required>
+              </div><!-- End .form-group -->
+
+              <div class="form-footer">
+                <button type="submit" class="btn btn-outline-primary-2">
+                  <span>Đăng Kí</span>
+                  <i class="icon-long-arrow-right"></i>
+                </button>
+
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="register-policy-2" required>
+                  <label class="custom-control-label" for="register-policy-2">Tôi đồng ý với <a href="#">chính sách bảo mật</a> *</label>
+                </div><!-- End .custom-checkbox -->
+              </div><!-- End .form-footer -->
+            </form>
+
+
+          </div><!-- .End .tab-pane -->
+        </div><!-- End .tab-content -->
+      </div><!-- End .form-tab -->
+    </div><!-- End .form-box -->
+  </div><!-- End .container -->
+</div><!-- End .login-page section-bg -->

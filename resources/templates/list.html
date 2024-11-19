@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Danh mục</title>
+</head>
+<body>
+<!--<div>-->
+    <h1>Quản lý Danh mục</h1>
+    <div class="button-container">
+        <h4><a href="#" onclick="loadContent('/views/admin/dashboard.html')" class="button">Quay lại trang chủ</a></h4>
+        <h4><a href="#" onclick="loadContent('/views/admin/product/add.html')" class="button">Thêm sản phẩm</a></h4>
+    </div>
+    <div th:if="${mess}">
+        <p style="color: #4CAF50" th:text="${mess}"></p>
+    </div>
+    <div th:if="${error}">
+        <p style="color: #4CAF50" th:text="${error}"></p>
+    </div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Tên sản phẩm</th>
+            <th>Hình ảnh</th>
+            <th>Tiêu đề</th>
+            <th>Giá bán</th>
+            <th>Giá nhập</th>
+            <th>Số lượng</th>
+            <th>Chi tiết</th>
+            <th>Danh mục</th>
+            <th colspan="2">Tác vụ</th>
+        </tr>
+        <tbody>
+        <tr th:each="item: ${product}">
+            <td th:text="${item.id}"></td>
+            <td th:text="${item.name}"></td>
+<!--            <td>-->
+<!--                <img th:src="@{'/assets/images/productImg/' + ${item.image}}" style="width:150px; height:auto;">-->
+<!--            </td>-->
+
+            <td th:text="${item.title}"></td>
+            <td th:text="${#numbers.formatDecimal(item.price, 0, 0)}"></td>
+            <td th:text="${#numbers.formatDecimal(item.gianhap, 0, 0)}"></td>
+            <td th:text="${item.quantity}"></td>
+            <td th:text="${item.details}"></td>
+<!--            <td th:each="category:${category}" th:if="${category.id == item.category.id}"-->
+<!--                th:text="${category.name}">-->
+<!--                -->
+<!--            </td>-->
+            <td>
+                <a th:href="@{/admin/product/edit/{id}(id=${item.id})}" class="btn btn-primary">Sửa</a>
+            </td>
+            <td>
+                <a th:href="@{/admin/product/delete/{id}(id=${item.id})}" class="btn btn-primary">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+
+</script>
+
+</body>
+</html>

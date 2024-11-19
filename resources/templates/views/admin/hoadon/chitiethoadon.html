@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Chi tiết hóa đơn</title>
+</head>
+<body>
+<h1>Chi tiết hóa đơn</h1>
+<div>
+  <p><strong>ID hóa đơn:</strong> <span th:text="${order.id}"></span></p>
+  <p><strong>Khách hàng:</strong> <span th:text="${order.customerName}"></span></p>
+  <p><strong>Email:</strong> <span th:text="${order.email}"></span></p>
+  <p><strong>Số điện thoại:</strong> <span th:text="${order.phone}"></span></p>
+  <p><strong>Địa chỉ:</strong> <span th:text="${order.address}"></span></p>
+  <p><strong>Ghi chú:</strong> <span th:text="${order.note}"></span></p>
+  <p><strong>Tổng tiền:</strong> <span> <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}"></td>
+    VND</span></p>
+</div>
+
+<h2>Sản phẩm trong hóa đơn</h2>
+<table>
+  <thead>
+  <tr>
+    <th>Tên sản phẩm</th>
+    <th>Số lượng</th>
+    <th>Đơn giá</th>
+    <th>Tổng giá</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="item : ${order.items}">
+    <td th:text="${item.product.name}"></td>
+    <td th:text="${item.quantity}"></td>
+    <td th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}"></td>
+
+    <td th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 0, 'POINT')}"></td>VND
+
+  </tr>
+  </tbody>
+</table>
+
+<!-- Nút xác nhận đơn hàng đã giao -->
+<form th:action="@{/admin/status/{id}(id=${order.id})}" method="post">
+  <input type="hidden" name="status" value="2">
+  <button type="submit">Xác nhận đơn đã giao</button>
+</form>
+
+<a href="/admin/hoadon">Quay lại danh sách hóa đơn</a>
+</body>
+</html>
+>

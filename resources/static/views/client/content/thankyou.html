@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cảm ơn bạn!</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            text-align: center;
+            padding: 50px;
+            color: #333; /* Màu chữ chính */
+        }
+        .thank-you-message {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: auto;
+            width: 90%;
+            max-width: 600px;
+            transition: box-shadow 0.3s; /* Thêm hiệu ứng khi hover */
+        }
+        .thank-you-message:hover {
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); /* Hiệu ứng hover */
+        }
+        h1 {
+            color: #28a745; /* Màu xanh lá cây */
+            font-size: 2.5em; /* Kích thước chữ lớn hơn */
+            margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+        }
+        p {
+            font-size: 1.2em; /* Kích thước chữ lớn hơn */
+            margin: 10px 0;
+        }
+        .order-details {
+            background-color: #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: left; /* Canh trái cho thông tin đơn hàng */
+        }
+        .order-details h3 {
+            font-size: 1.5em; /* Kích thước chữ cho tiêu đề */
+            margin-bottom: 10px; /* Khoảng cách dưới tiêu đề thông tin đơn hàng */
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em; /* Kích thước chữ nhỏ hơn */
+            color: #555;
+        }
+        a {
+            color: #007bff; /* Màu liên kết */
+            text-decoration: none; /* Bỏ gạch chân */
+            font-weight: bold; /* Chữ in đậm */
+        }
+        a:hover {
+            text-decoration: underline; /* Gạch chân khi hover */
+        }
+    </style>
+</head>
+<body>
+
+<div class="thank-you-message">
+    <h1>Cảm ơn bạn!</h1>
+    <p>Chúng tôi đã nhận được đơn hàng của bạn.</p>
+    <p>Đơn hàng sẽ được xử lý trong thời gian sớm nhất.</p>
+
+    <div class="order-details">
+        <h3>Thông tin đơn hàng:</h3>
+        <p><strong>Tên khách hàng:</strong> <span th:text="${customerName}">Nguyễn Văn A</span></p>
+        <p><strong>Email:</strong> <span th:text="${customerEmail}"></span></p>
+        <p><strong>Số điện thoại:</strong> <span th:text="${customerPhone}"></span></p>
+        <p><strong>Tổng tiền:</strong> <span th:text="${#numbers.formatDecimal(totalAmount, 0, 0)}"></span> VND</p>
+    </div>
+</div>
+
+<div class="footer">
+    <p>Chúng tôi rất cảm kích sự ủng hộ của bạn!</p>
+    <p><a href="/NoiThatShop">Trở về trang chủ</a></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sản Phẩm</title>
+    <script>
+        const fetchProducts = async () => {
+            const token = localStorage.getItem('token');
+
+                const response = await fetch('/admin/product', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const products = await response.json();
+                    displayProducts(products);
+                } else {
+                    alert(`Lỗi: ${await response.text()}`);
+                }
+        };
+
+        const displayProducts = products => {
+            const productsTable = document.getElementById('productsTable');
+            products.forEach(({ id, name }) => {
+                const row = productsTable.insertRow();
+                row.innerHTML = `
+                    <td>${id}</td>
+                    <td>${name}</td>
+                    <td>
+                        <button onclick="editProduct(${id})">Sửa</button>
+                        <button onclick="deleteProduct(${id})">Xóa</button>
+                    </td>
+                `;
+            });
+        };
+
+        const editProduct = id => {
+            console.log(`Sửa sản phẩm với ID: ${id}`);
+            // Logic sửa sản phẩm có thể được thực hiện ở đây
+        };
+
+        const deleteProduct = id => {
+            console.log(`Xóa sản phẩm với ID: ${id}`);
+            // Logic xóa sản phẩm có thể được thực hiện ở đây
+        };
+
+        window.onload = fetchProducts; // Gọi hàm khi trang được tải
+    </script>
+</head>
+<body>
+<h1>Admin Products</h1>
+<table id="productsTable">
+    <tr>
+        <th>ID</th>
+        <th>Sản phẩm</th>
+        <th>Tác vụ</th>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,49 @@
+
+<div>
+    <h1>Sửa sản phẩm</h1>
+    <form th:action="@{/admin/product/edit/edit-product/{id}(id=${product.id})}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:value="${product.id}" name="id" />
+
+        <label for="name">Tên sản phẩm:</label>
+        <input type="text" id="name" name="name" th:value="${product.name}" required>
+
+        <label >Hình ảnh:</label>
+        <img th:src="@{'/assets/images/productImg/' + ${product.image}}" style="width:150px; height:auto;">
+
+        <label for="image">Chọn ảnh mới:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+
+        <label for="title">Tiêu đề:</label>
+        <input type="text" id="title" name="title" th:value="${product.title}" required>
+
+        <label for="price">Giá bán:</label>
+        <input type="text" id="price" name="price"
+               th:value="${#numbers.formatDecimal(product.price, 0, 0)}" required>
+
+        <label for="price">Giá nhập:</label>
+        <input type="text" id="gianhap" name="gianhap"
+               th:value="${#numbers.formatDecimal(product.gianhap, 0, 0)}" required>
+
+
+        <label for="quantity">Số lượng:</label>
+        <input type="text" id="quantity" name="quantity" th:value="${product.quantity}" required>
+
+        <label for="description">Chi tiết:</label>
+        <textarea id="description" name="description" rows="4" th:text="${product.description}" required></textarea>
+
+        <label for="category">Danh mục:</label>
+        <select name="categoryId" id="category">
+            <option value="">Chọn danh mục</option>
+            <!-- Hiển thị danh mục từ danh sách truyền vào model -->
+            <th:block th:each="category : ${category}">
+                <option th:value="${category.id}"th:text="${category.name}"
+                        th:selected="${product.category != null and product.category.id == category.id}">
+                </option>
+            </th:block>
+        </select>
+
+        <input type="submit" value="Cập nhật">
+
+        <a th:href="@{/admin/product}" class="button-quaylai button">Quay lại danh sách</a>
+    </form>
+</div>

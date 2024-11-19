@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Danh mục</title>
+</head>
+<body>
+<!--<div>-->
+    <h1>Quản lý Khách hàng</h1>
+<div th:if="${mess}">
+    <p style="color: #4CAF50" th:text="${mess}"></p>
+</div>
+    <div class="button-container">
+        <h4><a th:href="@{/admin}" class="button">Quay lại trang chủ</a></h4>
+    </div>
+    <div th:if="${mess}">
+        <p style="color: #4CAF50" th:text="${mess}"></p>
+    </div>
+    <div th:if="${error}">
+        <p style="color: #4CAF50" th:text="${error}"></p>
+    </div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Họ và tên</th>
+            <th>Email</th>
+            <th colspan="2">Tác vụ</th>
+        </tr>
+        <tbody>
+        <tr th:each="item: ${khachhang}">
+            <td th:text="${item.id}"></td>
+            <td th:text="${item.name}"></td>
+            <td th:text="${item.email}"></td>
+<!--            <td>-->
+<!--                <a th:href="@{/admin/khachhang/edit/{id}(id=${item.id})}" class="btn btn-primary">Sửa</a>-->
+<!--            </td>-->
+            <td>
+                <a th:href="@{/admin/khachhang/delete/{id}(id=${item.id})}" class="btn btn-primary">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title >Quản lý</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+
+</head>
+<body>
+<header>
+    <div>
+        <h3>Hệ thống Quản lý</h3>
+    </div>
+    <div>
+        <span>Chào, <span text="${username}">Người dùng</span></span> |
+        <a href="/logout" style="color: white;">Đăng xuất</a>
+    </div>
+</header>
+<div class="container">
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <a href="#" onclick="loadContent('/views/admin/category/list.html')">Quản lý Danh mục</a>
+        <a href="#" onclick="loadContent('/views/admin/product/list.html')">Quản lý sản phẩm</a>
+        <a href="#" onclick="loadContent('/views/admin/hoadon/list.html')">Quản lý hóa đơn</a>
+<!--        <a href="admin/nhansu}">Quản lý nhân sự</a>-->
+    </div>
+
+    <div class="content" id="contentAdmin" >
+        <div id="productsTable"></div>
+    </div>
+
+</div>
+<footer>
+    <p>Bản quyền © 2024</p>
+</footer>
+
+<script>
+    const fetchProducts = async () => {
+        const token = localStorage.getItem('token');
+
+        const response = await fetch('/admin/product/list', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+    };
+
+
+    window.onload = fetchProducts; // Gọi hàm khi trang được tải
+</script>
+<script src="/assets/JsCustom/homeAdmin.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<div>
+    <h1>Sửa Danh Mục</h1>
+    <form th:action="@{/admin/category/edit-category/{id}(id=${category.id})}" method="post">
+        <input type="hidden" th:value="${category.id}" name="id" />
+
+        <label for="name">Tên danh mục:</label>
+        <input type="text" id="name" name="name" th:value="${category.name}" required>
+
+        <label for="details">Chi tiết:</label>
+        <textarea id="details" name="details" rows="4" th:text="${category.details}" required></textarea>
+
+        <input type="submit" value="Cập nhật">
+
+        <a th:href="@{/admin/categor/list}" class="button-quaylai button">Quay lại danh sách</a>
+    </form>
+</div>

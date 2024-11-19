@@ -1,0 +1,23 @@
+
+<div>
+    <h1>Sửa slide</h1>
+    <form th:action="@{edit-slide/{id}(id=${slide.id})}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:value="${slide.id}" name="id" />
+
+        <label >Hình ảnh:</label>
+        <img th:src="@{'/assets/images/slider/' + ${slide.image}}" style="width:150px; height:auto;">
+
+        <label for="image">Chọn ảnh mới:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+
+        <label for="title">Tiêu đề:</label>
+        <input type="text" id="title" name="title" th:value="${slide.title}" required>
+
+        <label for="description">Chi tiết:</label>
+        <textarea id="description" name="description" rows="4" th:text="${slide.content}" required></textarea>
+
+        <input type="submit" value="Cập nhật">
+
+        <a th:href="@{/admin/slide/list}" class="button-quaylai button">Quay lại danh sách</a>
+    </form>
+</div>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sign In</title>
+    <script>
+        async function signIn(event) {
+            event.preventDefault(); // Ngăn chặn hành vi gửi form mặc định
+
+            // Lấy dữ liệu từ form
+            const email = document.querySelector('input[name="email"]').value;
+            const password = document.querySelector('input[name="password"]').value;
+
+            // Tạo đối tượng chứa dữ liệu để gửi
+            const signInData = {
+                email: email,
+                password: password
+            };
+
+            try {
+                const response = await fetch('/auth/signin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(signInData)
+                });
+
+                // Kiểm tra xem yêu cầu có thành công không
+                if (response.ok) {
+                    const data = await response.json();
+                    // Xử lý dữ liệu trả về (ví dụ: lưu token hoặc chuyển hướng)
+                    console.log(data);
+                    // Ví dụ: Lưu token vào localStorage
+                    if (data.token) {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('refreshToken', data.refreshToken);
+                        // Chuyển hướng hoặc làm gì đó sau khi đăng nhập thành công
+                        alert('Đăng nhập thành công!');
+                        window.location.href = '/auth/product'; // chuyển hướng đến trang dashboard
+                    }
+                } else {
+                    // Xử lý lỗi nếu đăng nhập không thành công
+                    const errorData = await response.json();
+                    alert(`Lỗi: ${errorData.error}`);
+                }
+            } catch (error) {
+                console.error('Có lỗi xảy ra:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Sign In</h1>
+<form onsubmit="signIn(event)">
+    <input type="text" name="email" placeholder="Email" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <button type="submit">Sign In</button>
+</form>
+</body>
+</html>

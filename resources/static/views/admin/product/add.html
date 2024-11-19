@@ -1,0 +1,42 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div>
+    <h1>Thêm Danh Mục</h1>
+    <p th:if="${error}" th:text="${error}"></p>
+    <form th:action="@{save-product}" method="post" enctype="multipart/form-data">
+        <label for="name">Tên sản phẩm:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="image">Hình ảnh:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+
+        <label for="title">Tiêu đề:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="description">Nội dung:</label>
+        <input type="text" id="description" name="description" required>
+
+        <label for="price">Giá bán:</label>
+        <input type="text" id="price" name="price" required>
+
+        <label for="gianhap">Giá nhập:</label>
+        <input type="text" id="gianhap" name="gianhap" required>
+
+
+        <label for="quantity">Số lượng:</label>
+        <input type="text" id="quantity" name="quantity" required>
+
+        <label >Số lượng:</label>
+
+        <select name="categoryId" required>
+            <option value="" disabled selected>Chọn danh mục</option>
+            <option th:each="item : ${category}" th:value="${item.id}" th:text="${item.name}"></option>
+        </select>
+
+
+        <input type="submit" value="Lưu">
+        <a th:href="@{/admin/product}" class="button-quaylai button">Quay lại danh sách</a>
+    </form>
+
+
+</div>
+</html>

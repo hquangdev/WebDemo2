@@ -1,0 +1,134 @@
+<div class="page-header text-center" style="background-image: url('/assets/images/page-header-bg.jpg')">
+    <div class="container">
+        <h1 class="page-title">Xin chào Quý Khách<span>Shop</span></h1>
+    </div><!-- End .container -->
+</div><!-- End .page-header -->
+<nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Shop</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Danh mục</li>
+        </ol>
+    </div><!-- End .container -->
+</nav><!-- End .breadcrumb-nav -->
+
+<div class="page-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="toolbox">
+                    <div class="toolbox-left">
+<!--                        <div class="toolbox-info">-->
+<!--                            Showing <span>9 of 56</span> Products-->
+<!--                        </div>&lt;!&ndash; End .toolbox-info &ndash;&gt;-->
+                    </div><!-- End .toolbox-left -->
+
+                </div><!-- End .toolbox -->
+
+                <div class="products mb-3">
+                    <div class="row justify-content-center">
+
+                        <div class="col-6" th:each="product: ${products}">
+                            <div class="product product-7 text-center">
+                                <figure class="product-media">
+                                    <span class="product-label label-new">New</span>
+                                    <a th:href="@{/home/product/{id}(id=${product.id})}">
+                                        <img th:src="@{/assets/images/productImg/{image}(image=${product.image})}" class="product-image">
+                                    </a>
+
+<!--                                    <div class="product-action-vertical">-->
+<!--                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>-->
+<!--                                        <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>-->
+<!--                                        <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>-->
+<!--                                    </div>&lt;!&ndash; End .product-action-vertical &ndash;&gt;-->
+
+
+                                    <div class="product-action">
+                                        <form th:action="@{/home/addToCart/{id}(id=${product.id})}" method="post">
+                                            <button  class="btn-product btn-cart"><span>Thêm vào giỏ hàng</span></button>
+                                        </form>
+                                    </div>
+                                </figure>
+
+                                <div class="product-body">
+
+                                    <h3 class="product-title"><a th:href="@{/home/product/{id}(id=${product.id})}" th:text="${product.title}">tiêu đề</a></h3><!-- End .product-title -->
+                                    <div class="product-price" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">
+                                        VND
+                                    </div><!-- End .product-price -->
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 2 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+
+                                </div><!-- End .product-body -->
+                            </div><!-- End .product -->
+                        </div><!-- End .col-sm-6 -->
+
+
+                    </div><!-- End .row -->
+                </div><!-- End .products -->
+
+
+
+            </div><!-- End .col-lg-9 -->
+            <aside class="col-lg-3 order-lg-first">
+                <div class="sidebar sidebar-shop">
+                    <div class="widget widget-collapsible">
+                        <h3 class="widget-title">
+                            <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
+                                Danh mục
+                            </a>
+                        </h3><!-- End .widget-title -->
+
+                        <div class="collapse show" id="widget-1">
+                            <div class="widget-body">
+                                <div class="filter-items filter-items-count">
+                                    <div class="filter-item">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="cat-1">
+                                            <label class="custom-control-label" for="cat-1">Dresses</label>
+                                        </div><!-- End .custom-checkbox -->
+                                        <span class="item-count">3</span>
+                                    </div><!-- End .filter-item -->
+
+                                    <div class="filter-item">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="cat-2">
+                                            <label class="custom-control-label" for="cat-2">T-shirts</label>
+                                        </div><!-- End .custom-checkbox -->
+                                        <span class="item-count">0</span>
+                                    </div><!-- End .filter-item -->
+
+                                    <div class="filter-item">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="cat-3">
+                                            <label class="custom-control-label" for="cat-3">Bags</label>
+                                        </div><!-- End .custom-checkbox -->
+                                        <span class="item-count">4</span>
+                                    </div><!-- End .filter-item -->
+
+                                    <div class="filter-item">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="cat-4">
+                                            <label class="custom-control-label" for="cat-4">Jackets</label>
+                                        </div><!-- End .custom-checkbox -->
+                                        <span class="item-count">2</span>
+                                    </div><!-- End .filter-item -->
+
+
+
+
+                                </div><!-- End .filter-items -->
+                            </div><!-- End .widget-body -->
+                        </div><!-- End .collapse -->
+                    </div><!-- End .widget -->
+
+                </div><!-- End .sidebar sidebar-shop -->
+            </aside><!-- End .col-lg-3 -->
+        </div><!-- End .row -->
+    </div><!-- End .container -->
+</div><!-- End .page-content -->
