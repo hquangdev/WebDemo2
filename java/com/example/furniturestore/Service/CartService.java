@@ -124,7 +124,6 @@ public class CartService {
                         BigDecimal itemTotal = product.getPrice().multiply(new BigDecimal(quantity));
                         totalAmount = totalAmount.add(itemTotal);
 
-                        // Lưu thông tin các mục trong giỏ hàng vào bảng order_items
                         OrderItem orderItem = new OrderItem();
                         orderItem.setProduct(product);
                         orderItem.setQuantity(quantity);
@@ -137,7 +136,6 @@ public class CartService {
                 order.setTotalAmount(totalAmount);
                 orderRepo.save(order);
 
-                // Xóa giỏ hàng sau khi thanh toán thành công
                 redisTemplate.delete(cartKey);
 
                 return "Thanh toán thành công. Đơn hàng của bạn đã được ghi nhận.";
@@ -154,9 +152,9 @@ public class CartService {
         }
     }
 
-    // Xóa giỏ hàng sau khi thanh toán xong
-    public void clearCart(String sessionId) {
-        String cartKey = CART_PREFIX + sessionId;
-        redisTemplate.delete(cartKey);
-    }
+//    // Xóa giỏ hàng sau khi thanh toán xong
+//    public void clearCart(String sessionId) {
+//        String cartKey = CART_PREFIX + sessionId;
+//        redisTemplate.delete(cartKey);
+//    }
 }
