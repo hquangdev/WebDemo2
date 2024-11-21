@@ -2,8 +2,10 @@ package com.example.furniturestore.Controller;
 
 import com.example.furniturestore.Entity.Category;
 import com.example.furniturestore.Service.CategoryService;
+import com.example.furniturestore.dto.CategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,17 +24,16 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> insertCategory(@RequestBody Category category) {
-        String name = category.getName();
-        categoryService.insertCategory(name, category);
-
-        return ResponseEntity.status(201).body("Bạn đã thêm thành công danh mục: " + name);
+    public ResponseEntity<String> addCategory(@Validated @RequestBody CategoryRequest categoryRequest) {
+        categoryService.addCategory(categoryRequest);
+        return ResponseEntity.status(200).body("Bạn đã thêm thành công danh mục");
     }
 
+
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory) {
-        categoryService.updateCategory(id, updatedCategory);
-        return ResponseEntity.status(201).body("Cập nhật danh mục thành công");
+    public ResponseEntity<String> updateCategory(@Validated @PathVariable Long id, @RequestBody CategoryRequest categoryRequest) {
+        categoryService.updateCategory(id, categoryRequest);
+        return ResponseEntity.status(200).body("Cập nhật danh mục thành công");
     }
 
     //xoa danh muc

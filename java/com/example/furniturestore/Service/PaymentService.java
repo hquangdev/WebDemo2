@@ -8,11 +8,17 @@ import com.example.furniturestore.Repotitory.OrderItemRepository;
 import com.example.furniturestore.Repotitory.OrderRepository;
 import com.example.furniturestore.Repotitory.OurUserRepo;
 import com.example.furniturestore.Repotitory.ProductRepo;
+import com.example.furniturestore.dto.OrderItemDTO;
+import com.example.furniturestore.dto.OrderRequest;
+import com.example.furniturestore.dto.OrderResponseDTO;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -29,27 +35,11 @@ public class PaymentService {
     @Autowired
     private OurUserRepo userRepository;
 
-    // Xử lý thanh toán trực tiếp
-    public boolean processPayment(Long userId, Map<String, Integer> cart) {
-        // Tính tổng số tiền thanh toán từ giỏ hàng
-        BigDecimal totalAmount = calculateTotalAmount(cart);
-
-        OurUsers user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
-
-        boolean paymentSuccessful = true;
-
-        if (paymentSuccessful) {
-            saveOrder(user, cart, totalAmount);
-        }
-
-        return paymentSuccessful;
-    }
-
     // Tính tổng số tiền thanh toán từ giỏ hàng
-    private BigDecimal calculateTotalAmount(Map<String, Integer> cart) {
+    private BigDecimal calculateTotalAmount(Map<Long, Integer> cart) {
         BigDecimal totalAmount = BigDecimal.ZERO;
 
-        for (Map.Entry<String, Integer> entry : cart.entrySet()) {
+        for (Map.Entry<Long, Integer> entry : cart.entrySet()) {
             Long productId = Long.valueOf(entry.getKey());
             Integer quantity = entry.getValue();
 
@@ -62,23 +52,76 @@ public class PaymentService {
         return totalAmount;
     }
 
+    // Xử lý thanh toán trực tiếp
+    @Transactional
+    public OrderResponseDTO processCheckout(String userId, OrderRequest orderRequest) {
+        // 1. Kiểm tra giỏ hàng
+        Map<Long, Integer> cart = orderRequest.getCart();
+        if (cart == null || cart.isEmpty()) {
+            throw new RuntimeException("Giỏ hàng trống. Không thể thanh toán.");
+        }
+
+        // 2. Tính tổng tiền
+        BigDecimal totalAmount = calculateTotalAmount(cart);
+
+        // 3. Lấy thông tin người dùng
+        OurUsers user = userRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
+        // 4. Lưu đơn hàng
+        Order order = saveOrder(user, cart, totalAmount, orderRequest);
+
+        // 5. Trả về thông tin đơn hàng dưới dạng DTO
+        return mapOrderToResponseDTO(order);
+    }
+
+    private OrderResponseDTO mapOrderToResponseDTO(Order order) {
+        // Tạo đối tượng OrderResponseDTO và ánh xạ thông tin
+        OrderResponseDTO responseDTO = new OrderResponseDTO();
+        responseDTO.setOrderId(order.getId());
+        responseDTO.setUserId(order.getUserId());
+        responseDTO.setTotalAmount(order.getTotalAmount());
+        responseDTO.setStatus(order.getStatus());
+        responseDTO.setAddress(order.getAddress());
+        responseDTO.setPhone(order.getPhone());
+        responseDTO.setNote(order.getNote());
+
+        // Duyệt qua danh sách OrderItem để lấy thông tin các sản phẩm trong đơn hàng
+        List<OrderItemDTO> itemDTOs = order.getOrderItems().stream().map(orderItem -> {
+            OrderItemDTO itemDTO = new OrderItemDTO();
+            itemDTO.setProductId(orderItem.getProduct().getId());
+            itemDTO.setProductName(orderItem.getProduct().getName());
+            itemDTO.setPrice(orderItem.getPrice());
+            itemDTO.setQuantity(orderItem.getQuantity());
+            return itemDTO;
+        }).collect(Collectors.toList());
+
+        responseDTO.setOrderItems(itemDTOs);
+        return responseDTO;
+    }
+
+
     // Lưu thông tin đơn hàng vào cơ sở dữ liệu
-    private void saveOrder(OurUsers user, Map<String, Integer> cart, BigDecimal totalAmount) {
-        // Tạo đối tượng đơn hàng
+    private Order saveOrder(OurUsers user, Map<Long, Integer> cart, BigDecimal totalAmount, OrderRequest orderRequest) {
+        // 1. Tạo đối tượng Order
         Order order = new Order();
         order.setUserId(user.getId().toString());
         order.setTotalAmount(totalAmount);
         order.setStatus("Đã thanh toán");
+        order.setAddress(orderRequest.getAddress());
+        order.setPhone(orderRequest.getPhone());
+        order.setNote(orderRequest.getNote());
 
-        // Lưu đơn hàng vào cơ sở dữ liệu
+        // Lưu đơn hàng
         order = orderRepository.save(order);
 
-        // Lưu các item trong đơn hàng (OrderItems)
-        for (Map.Entry<String, Integer> entry : cart.entrySet()) {
-            Long productId = Long.valueOf(entry.getKey());
+        // 2. Tạo các OrderItem và lưu vào DB
+        for (Map.Entry<Long, Integer> entry : cart.entrySet()) {
+            Long productId = entry.getKey();
             Integer quantity = entry.getValue();
 
-            Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
 
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
@@ -88,6 +131,9 @@ public class PaymentService {
 
             orderItemRepository.save(orderItem);
         }
+
+        return order;
     }
+
 }
 

@@ -2,6 +2,9 @@ package com.example.furniturestore.Controller;
 
 import com.example.furniturestore.Service.CartService;
 import com.example.furniturestore.Service.JWTUtils;
+import com.example.furniturestore.Service.PaymentService;
+import com.example.furniturestore.dto.OrderRequest;
+import com.example.furniturestore.dto.OrderResponseDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,9 @@ public class CartController {
 
     @Autowired
     private JWTUtils jwtUtils;
+
+    @Autowired
+    private PaymentService paymentService;
 
     // Thêm sản phẩm vào giỏ hàng
     @PostMapping("/home/add-cart")
@@ -36,13 +42,10 @@ public class CartController {
         return cartService.getCart(sessionId);
     }
 
-    // Xử lý thanh toán và lưu đơn hàng vào DB
     @PostMapping("/user/checkout")
-    public ResponseEntity<String> checkout(@RequestHeader(value = "Authorization", required = false) String token,
-                                           @RequestParam String address,
-                                           @RequestParam String phone,
-                                           @RequestParam String note,
-                                           HttpSession session) {
+    public ResponseEntity<?> checkout(@RequestHeader(value = "Authorization", required = false) String token,
+                                      @RequestBody OrderRequest orderRequest,
+                                      HttpSession session) {
 
         String sessionId = session.getId();
 
@@ -61,17 +64,10 @@ public class CartController {
                     .body("Token không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại.");
         }
 
-        // Xử lý thanh toán
-        String result = cartService.checkout(sessionId, userId, address, phone, note);
+        // Gọi service xử lý thanh toán
+        OrderResponseDTO orderResponse = paymentService.processCheckout(userId, orderRequest);
 
-        // Trả về kết quả thanh toán
-        if (result.equals("Giỏ hàng trống. Không thể thanh toán.")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-        } else if (result.equals("Giỏ hàng đang được xử lý, vui lòng thử lại sau.")) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
-        }
-
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(orderResponse);
     }
 
 }

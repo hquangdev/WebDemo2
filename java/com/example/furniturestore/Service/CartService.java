@@ -152,6 +152,7 @@ public class CartService {
         }
     }
 
+
 //    // Xóa giỏ hàng sau khi thanh toán xong
 //    public void clearCart(String sessionId) {
 //        String cartKey = CART_PREFIX + sessionId;

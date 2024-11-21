@@ -3,6 +3,7 @@ package com.example.furniturestore.Service;
 
 import com.example.furniturestore.Entity.Category;
 import com.example.furniturestore.Repotitory.CategoryRepo;
+import com.example.furniturestore.dto.CategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,31 +21,37 @@ public class CategoryService {
     }
 
     //thêm danh mục
-    public void insertCategory(String name, Category category)  {
-        Optional<Category> categoryName = categoryRepo.findByName(name);
+    public void addCategory(CategoryRequest categoryRequest)  {
 
-        if(categoryName.isPresent()){
+        Optional<Category> existingCategory = categoryRepo.findByName(categoryRequest.getName().trim());
+        if (existingCategory.isPresent()) {
             throw new RuntimeException("Tên danh mục đã tồn tại");
         }
+
+        Category category = new Category();
+
+        category.setName(categoryRequest.getName().trim());
+        category.setContent(categoryRequest.getContent());
+
         categoryRepo.save(category);
 
     }
 
     //Sửa danh mục
-    public void updateCategory(Long id, Category category) {
+    public void updateCategory(Long id, CategoryRequest categoryRequest) {
         // Tìm danh mục hiện tại
         Category existingCategory = categoryRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục với ID: " + id));
 
-        Optional<Category> CategoryName = categoryRepo.findByName(category.getName());
+        Optional<Category> CategoryName = categoryRepo.findByName(categoryRequest.getName());
 
         if (CategoryName.isPresent() ) {
             throw new RuntimeException("Tên danh mục đã tồn tại");
         }
 
         // Cập nhật thông tin và lưu danh mục
-        existingCategory.setName(category.getName());
-        existingCategory.setContent(category.getContent());
+        existingCategory.setName(categoryRequest.getName());
+        existingCategory.setContent(categoryRequest.getContent());
         categoryRepo.save(existingCategory);
     }
 

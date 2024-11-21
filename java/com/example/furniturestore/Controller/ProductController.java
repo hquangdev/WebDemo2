@@ -1,16 +1,14 @@
 package com.example.furniturestore.Controller;
 
-import com.example.furniturestore.Entity.Product;
 import com.example.furniturestore.Repotitory.ProductRepo;
 import com.example.furniturestore.Service.ProductService;
+import com.example.furniturestore.dto.ProductRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-
 
 @RestController
 public class ProductController {
@@ -22,40 +20,30 @@ public class ProductController {
     private ProductRepo productRepo;
 
 
-
     @GetMapping("/admin/product/list")
     public ResponseEntity<Object> getAllProducts(){
         return ResponseEntity.ok(productRepo.findAll());
     }
 
     //theem san [ham
-    @PostMapping("/add")
-    public ResponseEntity<Object> addProduct(
-            @RequestParam String name,
-            @RequestParam String title,
-            @RequestParam Double price,
-            @RequestParam int quantity,
-            @RequestParam String details,
-            @RequestParam MultipartFile image,
-            @RequestParam Long categoryId) throws IOException {
-
-        productService.addProduct(name, title, price, quantity, details, image, categoryId);
-        return ResponseEntity.ok("Thêm sản phẩm thành công");
+    @PostMapping("/admin/product/add")
+    public ResponseEntity<String> createProduct(@Validated @ModelAttribute ProductRequest dto) throws IOException {
+        try {
+            productService.createProduct(dto);
+            return ResponseEntity.ok("Sản phẩm đã được thêm thành công!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Đã có lỗi xảy ra: " + e.getMessage());
+        }
     }
+
 
     //Sửa sản phẩm
     @PutMapping("/admin/product/edit/{id}")
-    public ResponseEntity<String> editProduct(@PathVariable Long id,
-            @RequestParam String name,
-            @RequestParam String title,
-            @RequestParam Double price,
-            @RequestParam int quantity,
-            @RequestParam String details,
-            @RequestParam MultipartFile image,
-            @RequestParam Long categoryId) throws IOException {
+    public ResponseEntity<String> editProduct(@Validated @PathVariable Long id,
+                                              @ModelAttribute ProductRequest productRequest) throws IOException {
 
-            productService.editProduct(id, name, title, price, quantity, details, image, categoryId);
-            return ResponseEntity.ok("Đã cập nhật thành công sản phẩm: " + name);
+            productService.editProduct(id, productRequest);
+            return ResponseEntity.ok("Đã cập nhật thành công sản phẩm");
     }
 
     //Xóa san phẩm
@@ -65,11 +53,11 @@ public class ProductController {
         return ResponseEntity.ok("Xóa sản phẩm thành công");
     }
 
-    // API tìm kiếm sản phẩm
-    @GetMapping("/admin/products/search")
-    public List<Product> searchProducts(@RequestParam String keyword) throws IOException {
-        return productService.getProductSuggestions(keyword);
-    }
+//    // API tìm kiếm sản phẩm
+//    @GetMapping("/admin/products/search")
+//    public List<Product> searchProducts(@RequestParam String keyword) throws IOException {
+//        return productService.getProductSuggestions(keyword);
+//    }
 
 
 
